@@ -2,7 +2,9 @@ package scoket.bio;
 
 import java.io.IOException;
 import java.net.ServerSocket;
-import java.net.Socket;  
+import java.net.Socket;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;  
 /** 
  * BIO服务端源码 
  * @author yangtao__anxpp.com 
@@ -13,6 +15,8 @@ public final class ServerNormal {
     private static int DEFAULT_PORT = 12345;  
     //单例的ServerSocket  
     private static ServerSocket server;  
+    //线程池 懒汉式的单例  
+    private static ExecutorService executorService = Executors.newFixedThreadPool(60); 
     //根据传入参数设置监听端口，如果没有参数调用以下方法并使用默认值  
     public static void start() throws IOException{  
         //使用默认值  
@@ -32,7 +36,8 @@ public final class ServerNormal {
                 Socket socket = server.accept();  
                 //当有新的客户端接入时，会执行下面的代码  
                 //然后创建一个新的线程处理这条Socket链路  
-                new Thread(new ServerHandler(socket)).start();  
+                //new Thread(new ServerHandler(socket)).start();//客户端每次请求新建立一个线程处理请求
+                executorService.execute(new ServerHandler(socket));//将请求交给线程池来管理
             }  
         }finally{  
             //一些必要的清理工作  
