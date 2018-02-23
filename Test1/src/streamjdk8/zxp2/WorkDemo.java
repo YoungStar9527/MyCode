@@ -4,8 +4,16 @@ import static java.util.Comparator.*;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Currency;
 import java.util.List;
+import java.util.Locale;
 import java.util.Optional;
+import java.util.function.IntSupplier;
+import java.util.function.Supplier;
+import java.util.stream.IntStream;
+import java.util.stream.Stream;
+
+
 import static java.util.stream.Collectors.*;
 
 public class WorkDemo {
@@ -23,12 +31,12 @@ public class WorkDemo {
 		Trader alan = new Trader("Alan","Cambridge");
 		Trader brian = new Trader("Brian","Cambridge");
 		List<Transaction> transactions = Arrays.asList(
-		 new Transaction(brian, 2011, 300),
-		 new Transaction(raoul, 2012, 1000),
-		 new Transaction(raoul, 2011, 400),
-		 new Transaction(mario, 2012, 710),
-		 new Transaction(mario, 2012, 700),
-		 new Transaction(alan, 2012, 950)
+		 new Transaction(brian,Currency.getInstance(Locale.CHINA), 2011, 300),
+		 new Transaction(raoul,Currency.getInstance(Locale.JAPAN), 2012, 1000),
+		 new Transaction(raoul,Currency.getInstance(Locale.JAPAN), 2011, 400),
+		 new Transaction(mario,Currency.getInstance(Locale.JAPAN), 2012, 710),
+		 new Transaction(mario,Currency.getInstance(Locale.US), 2012, 700),
+		 new Transaction(alan,Currency.getInstance(Locale.US), 2012, 950)
 		);
 		List<Trader> treaders=new ArrayList<>();
 		treaders.add(raoul);
@@ -64,8 +72,31 @@ public class WorkDemo {
 //		Integer max=transactions.stream().map(a->a.getValue()).reduce(0,Integer::max);
 //		System.out.println(max);//7
 		
-//		Optional<Transaction> min=transactions.stream().reduce((a,b)-> a.getValue()<b.getValue()?a:b);//8-1利用reduce返回最小交易
+		//Optional<Transaction> min=transactions.stream().reduce((a,b)-> a.getValue()<b.getValue()?a:b);//8-1利用reduce返回最小交易
 		Optional<Transaction> min=transactions.stream().min(comparing(Transaction::getValue));//8-2利用流min方法返回最小交易
 		System.out.println(min.get().getValue());//8
+		//workDemo();
+	}
+	public static void  workDemo(){
+		/**斐波纳契数列是著名的经典编程练习。下面这个数列就是斐波纳契数列的一部分：0, 1, 1,
+			2, 3, 5, 8, 13, 21, 34, 55…数列中开始的两个数字是0和1，后续的每个数字都是前两个数字之和。
+			斐波纳契元组序列与此类似，是数列中数字和其后续数字组成的元组构成的序列：(0, 1),
+			(1, 1), (1, 2), (2, 3), (3, 5), (5, 8), (8, 13), (13, 21) …
+			你的任务是用iterate方法生成斐波纳契元组序列中的前20个元素。*/
+		/*Stream.iterate(new int[]{0,1},n->new int[]{n[1],n[0]+n[1]}).limit(20)
+		.forEach(a->{System.out.println("("+a[0]+","+a[1]+")");});//斐波纳契元组序列
+		//.forEach(a->{System.out.println(a[0]);});//斐波纳契数列*/		
+		IntSupplier fib = new IntSupplier(){
+			private int previous = 0;//第n位
+			private int current = 1;//第n+1位
+			public int getAsInt(){
+				int oldprevious=this.previous;//现将第n位存入变量
+				int newcurrent=this.previous+this.current;//生成下个个序列第n+2位
+				this.previous=this.current;//n位=n+1位,向前进一位
+				this.current=newcurrent;//n+1位=n+2位,向前进一位
+				return oldprevious;//返回第n位
+			}
+		};
+		IntStream.generate(fib).limit(10).forEach(System.out::println); 
 	}
 }

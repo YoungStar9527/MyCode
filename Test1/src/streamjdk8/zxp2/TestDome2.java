@@ -1,10 +1,11 @@
 package streamjdk8.zxp2;
 
+import java.io.IOException;
+import java.nio.charset.Charset;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collector;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 public class TestDome2 {
@@ -60,14 +61,28 @@ public class TestDome2 {
 //		stream.map(String::toUpperCase).forEach(System.out::println); 
 //		Stream<String> emptyStream = Stream.empty();//创建空流
 
-		int[] numbers = {2, 3, 5, 7, 11, 13};
-		int sum = Arrays.stream(numbers).sum(); //接受数组参数创建流
-		System.out.println(sum);
+//		int[] numbers = {2, 3, 5, 7, 11, 13};
+//		int sum = Arrays.stream(numbers).sum(); //接受数组参数创建流
+//		System.out.println(sum);
 		
+//		long uniqueWords = 0;
+//		try(Stream<String> lines =
+//		 Files.lines(Paths.get("D:/data.txt"), Charset.defaultCharset())){
+//		uniqueWords = lines.flatMap(line -> Arrays.stream(line.split(" ")))
+//		 .distinct()
+//		 .count();//Files.lines读取文件返回流
+//		}
+//		catch(IOException e){
+//		} 
+//		System.out.println(uniqueWords);
 		
+//		Stream.iterate(0, n -> n + 2)
+//		.limit(10)
+//		.forEach(System.out::println);//iterate无限流,接受初始值产生新值
 		
-		
-		
+		Stream.generate(Math::random)
+		.limit(10)
+		.forEach(System.out::println);//generate无限流,产生新值
 		
 		
 		
